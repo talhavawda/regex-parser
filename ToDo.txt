@@ -1,0 +1,5 @@
+	(The code for the expression tree and NFA is already done)
+1. Convert NFA (Thompson's Construction) to DFA, using Subset Construction
+2. Use the DFA to check whether an entered string is a member of the language that the regular expression denotes
+	a. Sample regex's and their sample test strings are in the TestData.txt file
+
