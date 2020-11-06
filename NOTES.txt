@@ -3,6 +3,7 @@ To-Do
 	(The code for the expression tree and NFA is already done)
 1. Convert NFA (Thompson's Construction) to DFA, using Subset Construction
 2. Use the DFA to check whether an entered string is a member of the language that the regular expression denotes
+		->> SEE THE DFA-RECOGNISE ALGORITHM IN THE COMP314 SLIDES AND ALSO FROM COMP316(D-RECOGNISE)
 	a. Sample regex's and their sample test strings are in the TestData.txt file
 
 
@@ -53,8 +54,11 @@ Will have to use DFS/BFS to traverse the NFA to construct the DFA
 	a. 48-122 to represents the digits and alphabets
 	b. Make them variables and set them through the constructor to just represent the range of the alphabet of the regex/NFA
 
-What I've done
-===============
-1. Created class DfaState
-2. Modified/Updated the Dfa class
+
+
+What I've done so far
+=======================
+1. Created the RunAssignment class (just a template so far)
+2. Created class DfaState
+3. Modified/Updated the Dfa class
 
