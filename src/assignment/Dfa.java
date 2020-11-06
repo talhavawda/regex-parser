@@ -5,8 +5,14 @@
 	What we changed:
 		1. Created a DfaState class to represent a set of NFA States (See DfaState.java)
 			-> Thus changed the type of the states field (and the respective parameter and return types) from ArrayList<HashSet<NfaState>> to ArrayList<DfaState>
-		2. Added an alphabet field to this class
+		2. Added the following  fields to this class: alphabet, trapState, startState, acceptStates
+			-> Just added them to have the fields to represent the 5-tuple formal definition of a DFA
+				-> We may or may not use some of these fields as some of these properties can be obtained from each DfaState themself
 		3. Created a static method makeDfa() to make and return a DFA based on the NFA parameter using the Subset Construction method
+			Todo - finish coding this method
+		4. Created the static methods epsilonClosure() and move(), to be called in the makeDfa method()
+			Todo - code these methods
+		5. Created the static method getAlphabet() to be called in the makeDfa method()
 
  */
 
@@ -62,21 +68,44 @@ public class Dfa {
      *  each dfa state.  Position i in the list holds the nfa states for dfa state i. 
      *  NB This is, of course, not necessary for using the dfa, but is merely for 
      *  information purposes
+     *
+     * *** DFA State i in this 'states' field corresponds to the state i in transTable[i, j]
+     * *** DFA State i in this 'states' field should have its 'stateNumber' field as i
      *  
      */
     
     protected int[][]               transTable;
     protected ArrayList<DfaState>   states;
-    protected int                   size;
-    private Set<String>             alphabet;
-    
+    protected int                   size; //the actual number of rows (states) in this DFA -> so dont have to traverse till MAX_STATES
+
+    private Set<String>             alphabet; //Made the BaseType String as it wont accept the primitive char type
+    private DfaState                trapState;
+    private DfaState                startState;
+    private Set<DfaState>           acceptStates;
+
+
+
+
     public Dfa() {
     }
-     
+
+    //Todo - add alphabet parameter
     public Dfa(int[][] transTable, ArrayList<DfaState> states, int size) {
        this.transTable = transTable;
        this.states     = states;
-       this.size       = size;        	
+       this.size       = size;
+
+       //...
+	    this.trapState = this.states.get(0);
+	    this.startState = this.states.get(1);
+
+	    this.acceptStates = new HashSet<DfaState>();
+
+	    for (DfaState state: this.states) {
+	    	if (state.isAcceptState()) {
+	    		this.acceptStates.add(state);
+		    }
+	    }
    }
     
    int[][] getTransTable() {
@@ -95,11 +124,23 @@ public class Dfa {
 
 	/**
 	 * Use the Subset Construction to create a DFA based on the NFA parameter
-	 * @param N
+	 * @param n
 	 */
-	public static void makeDfa(Nfa N) {
+	public static Dfa makeDfa(Nfa n) {
 
+		int size = 0;
     	ArrayList<DfaState> dfaStates = new ArrayList<DfaState>(); //this is to store all the dfaStates for the DFA; will be set as the states field in the DFA object
+
+		/*
+			adding extra column for whether the state is ACCEPT or NON_ACCEPT state (this is col 0)
+				-> Todo - this is based on the design sir gave. we can change this design by removing this column 0
+					-> The DfaState itself has a field and method to get whether it is an accept state or not, so we can use that for the conditional statement
+						(That get method will be used to populate this column anyway, so IF we remove this column we can save execution time)
+						(But its probably just better to just follow the design sir gave us)
+		 */
+		int columns = SIGMA_UPPER - SIGMA_LOWER + 2;
+		int [][] transition = new int[MAX_STATES][columns]; //transition table
+
 
     	/*
     	    The Trap State is unique to the DFA and doesnt contain any states from the NF (its nfaStateSet field is empty)
@@ -108,23 +149,103 @@ public class Dfa {
     	HashSet<NfaState> trapStateSet = new HashSet<NfaState>(); //is currently empty and will remain so as we are not adding any elements to it
     	DfaState trapState = new DfaState(trapStateSet); //its stateNumber is 0 (== TRAP)
 	    dfaStates.add(trapState);
+	    size++;
+
+	    for (int j = 0; j < columns; j++) {
+	    	transition[TRAP][j] = 0;
+	    }
 
 
-	    Queue<NfaState> dfaStatesQueue = new LinkedList<NfaState>(); //this will be used to keep track of DFA states generated but still yet to be expanded
+	    Queue<DfaState> dfaStatesQueue = new LinkedList<DfaState>(); //this will be used to keep track of DFA states generated but still yet to be expanded
 
 	    HashSet<NfaState> startStateSet = new HashSet<NfaState>();
+	    startStateSet.add(n.start); //add the Start State of the NFA
 
-	    //get ep-closure(NFAStartState)
+	    startStateSet = epsilonClosure(startStateSet);
 
-	    DfaState startState = new DfaState(trapStateSet); //its stateNumber is 1 (== START)
+	    DfaState startState = new DfaState(startStateSet); //its stateNumber is 1 (== START)
 		dfaStates.add(startState);
+		size++; //increment the number of DFA states we have created thus far
+
+		dfaStatesQueue.add(startState);
+
+		if (startState.isAcceptState()) {
+			transition[START][0] = ACCEPT;
+		}
+
+
+		//Todo - SEE SUBSET CONSTRUCTION ALGORITHM IN SLIDES (the mark V as final is already done in the DfaState class)
 
 		while (!dfaStatesQueue.isEmpty()) {
 
 		}
 
 
-
+		Dfa d = new Dfa();
+		//...
+		return d;
    }
+
+	//TODO
+	/**
+	 * @return the set of all states reachable on epsilon transitions from each individual NFA State in the nfaStates set
+	 */
+	public static HashSet<NfaState> epsilonClosure(HashSet<NfaState> nfaStates) {
+
+		HashSet<NfaState> ec = (HashSet<NfaState>) nfaStates.clone();
+		//...
+
+		return ec;
+	}
+
+	//TODO
+	/**
+	 * @param nfaStates
+	 * @param symbol
+	 * @return the set of all states reachable by transitioning on <symbol> from each individual NFA State in the nfaStates set
+	 */
+	public static HashSet<NfaState> move(HashSet<NfaState> nfaStates, char symbol) {
+
+		HashSet<NfaState> move = new HashSet<NfaState>();
+
+		//...
+
+		return move;
+	}
+
+
+	public static Set<String> getAlphabet(Nfa n) {
+
+		//Made the BaseType String as it wont accept the primitive char type
+		Set<String> alphabet = new HashSet<String>();
+
+		Stack<NfaState> states = new Stack<NfaState>();
+		HashSet<NfaState> statesChecked = new HashSet<NfaState>();
+
+		states.push(n.start);
+		statesChecked.add(n.start);
+
+		while (!states.empty()) {
+
+			NfaState state = states.pop();
+			char symbol = state.symbol;
+
+			if (symbol != NfaState.ACCEPT && symbol != NfaState.EPSILON) {
+				alphabet.add(Character.toString(symbol)); //add() first checks to see if the element is already in the set or not
+			}
+
+			if (state.next1 != null && !statesChecked.contains(state.next1)) {
+				states.push(state.next1);
+				statesChecked.add(state.next1);
+			}
+
+			if (state.next2 != null && !statesChecked.contains(state.next2)) {
+				states.push(state.next2);
+				statesChecked.add(state.next2);
+			}
+		}
+
+		return alphabet;
+	}
 
 }
