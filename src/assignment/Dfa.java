@@ -1,5 +1,10 @@
 /*
 	We are allowed to use our own design for this class (i.e. can modify or restructure as we wish)
+
+	What we changed:
+		1. Created a DfaState class to represent a set of NFA States (See DfaState.java)
+			-> Thus changed the type of the states field (and the respective parameter and return types) from ArrayList<HashSet<NfaState>> to ArrayList<DfaState>
+
  */
 
 package assignment;
@@ -57,17 +62,14 @@ public class Dfa {
      *  
      */
     
-    protected int[][]                        transTable;
-    protected ArrayList<HashSet<NfaState>>   states;	
-    protected int                            size;
+    protected int[][]               transTable;
+    protected ArrayList<DfaState>   states;
+    protected int                   size;
     
     public Dfa() {
     }
      
-    public Dfa(int[][]                      transTable,
-               ArrayList<HashSet<NfaState>> states,
-               int                          size) {
-               	
+    public Dfa(int[][] transTable, ArrayList<DfaState> states, int size) {
        this.transTable = transTable;
        this.states     = states;
        this.size       = size;        	
@@ -82,9 +84,8 @@ public class Dfa {
 	   
 	   return size;
    }
-   
-   ArrayList<HashSet<NfaState>> getStates() {
-   
+
+	ArrayList<DfaState> getStates() {
       return states;
    }
 }
