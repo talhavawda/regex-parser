@@ -1,3 +1,7 @@
+/*
+	We are allowed to use our own design for this class (i.e. can modify or restructure as we wish)
+ */
+
 package assignment;
 
 import java.util.*;

@@ -47,3 +47,12 @@ Will have to use DFS/BFS to traverse the NFA to construct the DFA
 	...
 
 	-> Note that an empty line is for a test string that is an empty string (i.e. the empty line is meant to be there, it is not a mistake)
+
+
+****In Dfa, change SIGMA_LOWER and SIGMA_UPPER to a smaller range?
+	a. 48-122 to represents the digits and alphabets
+	b. Make them variables and set them through the constructor to just represent the range of the alphabet of the regex/NFA
+
+What I've done
+===============
+1. Created a class DfaState
