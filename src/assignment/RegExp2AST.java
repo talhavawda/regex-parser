@@ -3,6 +3,7 @@ package assignment;
 import java.io.IOException;
           
 import java.text.ParseException;
+import java.util.HashSet;
 
 public class RegExp2AST {
 	
@@ -209,5 +210,7 @@ public class RegExp2AST {
         	System.out.println("Error at/near position " + ex.getErrorOffset() + " : " + 
                                ex.getMessage());
           }
+
+
    	}	                                        	                                             	                    	         	   	         	         	  	         	   		  	     		    	                                         	    	   	  		            
 }

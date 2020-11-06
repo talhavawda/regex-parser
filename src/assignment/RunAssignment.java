@@ -27,7 +27,7 @@ public class RunAssignment {
 		}
 
 		//Create an NFA for the regular expression (by using Thompson's Construction)
-		Nfa n = re.makeNfa();
+		//Nfa n = re.makeNfa();
 
 		//Create DFA
 

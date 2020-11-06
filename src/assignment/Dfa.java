@@ -1,9 +1,12 @@
 /*
+	This class was given.
 	We are allowed to use our own design for this class (i.e. can modify or restructure as we wish)
 
 	What we changed:
 		1. Created a DfaState class to represent a set of NFA States (See DfaState.java)
 			-> Thus changed the type of the states field (and the respective parameter and return types) from ArrayList<HashSet<NfaState>> to ArrayList<DfaState>
+		2. Added an alphabet field to this class
+		3. Created a static method makeDfa() to make and return a DFA based on the NFA parameter using the Subset Construction method
 
  */
 
@@ -65,6 +68,7 @@ public class Dfa {
     protected int[][]               transTable;
     protected ArrayList<DfaState>   states;
     protected int                   size;
+    private Set<String>             alphabet;
     
     public Dfa() {
     }
@@ -88,4 +92,39 @@ public class Dfa {
 	ArrayList<DfaState> getStates() {
       return states;
    }
+
+	/**
+	 * Use the Subset Construction to create a DFA based on the NFA parameter
+	 * @param N
+	 */
+	public static void makeDfa(Nfa N) {
+
+    	ArrayList<DfaState> dfaStates = new ArrayList<DfaState>(); //this is to store all the dfaStates for the DFA; will be set as the states field in the DFA object
+
+    	/*
+    	    The Trap State is unique to the DFA and doesnt contain any states from the NF (its nfaStateSet field is empty)
+    	    There is a transition to this trap state when epsilon-closure(move(<DfaState>,<symbol>)) = {} (results in an empty set - no set of NFA states to transition to )
+    	 */
+    	HashSet<NfaState> trapStateSet = new HashSet<NfaState>(); //is currently empty and will remain so as we are not adding any elements to it
+    	DfaState trapState = new DfaState(trapStateSet); //its stateNumber is 0 (== TRAP)
+	    dfaStates.add(trapState);
+
+
+	    Queue<NfaState> dfaStatesQueue = new LinkedList<NfaState>(); //this will be used to keep track of DFA states generated but still yet to be expanded
+
+	    HashSet<NfaState> startStateSet = new HashSet<NfaState>();
+
+	    //get ep-closure(NFAStartState)
+
+	    DfaState startState = new DfaState(trapStateSet); //its stateNumber is 1 (== START)
+		dfaStates.add(startState);
+
+		while (!dfaStatesQueue.isEmpty()) {
+
+		}
+
+
+
+   }
+
 }

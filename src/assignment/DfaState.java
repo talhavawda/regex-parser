@@ -10,15 +10,15 @@ public class DfaState {
 	private static int nextStateNum = 0;  // Current unique state number
 
 	private int stateNumber; //the identifier of this state. Will be used to re
-	private HashSet<NfaState> NfaStateSet; //the set of states in the NFA that this DFA state represents
+	private HashSet<NfaState> nfaStateSet; //the set of states in the NFA that this DFA state represents
 	private boolean isStartState;
 	private boolean isAcceptState; //to represent whether this state is an Accept (Final) State in the DFA or not
 	private boolean isTrapState;
 
 	//Constructor
-	public DfaState(HashSet<NfaState> NfaStateSet) {
+	public DfaState(HashSet<NfaState> nfaStateSet) {
 		this.stateNumber = nextStateNum++; //post-crement -> set this.stateNumber to the current value of nextStateNum, and then increment nextStateNum by 1
-		this.NfaStateSet = NfaStateSet;
+		this.nfaStateSet = nfaStateSet;
 
 		isStartState = stateNumber == Dfa.START; //if(stateNumber == Dfa.START) {isStartState = true;} else {isStartState = false;}
 		isTrapState = stateNumber == Dfa.TRAP;
@@ -39,7 +39,7 @@ public class DfaState {
 
 		isAcceptState = false;
 
-		for (NfaState state : NfaStateSet) {
+		for (NfaState state : nfaStateSet) {
 			if (state.getSymbol() == NfaState.ACCEPT) {
 				isAcceptState = true;
 				break; //since at least one state in the NFA is an Accept State, this DFA State will be an Accept State. So we can terminate the traversal.
@@ -52,7 +52,7 @@ public class DfaState {
 	}
 
 	public HashSet<NfaState> getNfaStateSet() {
-		return NfaStateSet;
+		return nfaStateSet;
 	}
 
 

@@ -55,4 +55,6 @@ Will have to use DFS/BFS to traverse the NFA to construct the DFA
 
 What I've done
 ===============
-1. Created a class DfaState
+1. Created class DfaState
+2. Modified/Updated the Dfa class
+
