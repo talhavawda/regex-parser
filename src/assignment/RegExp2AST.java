@@ -193,6 +193,8 @@ public class RegExp2AST {
    		 *   Illustrates use of convert routine.
    		 */
    		String re = "(\"x\" | \"y\")* \"x\" \"y\" \"y\"";
+	    //String re = "([x-y])* \"x\" \"y\" \"y\"";   /* THIS PRODUCES A DIFFERENT NFA THAN THE ONE ABOVE - it treats the character class as a single character instead of as an alternation*/
+
    		System.out.println("Converting regular expression " + re + " to RegExp expression tree");
         try {
           RegExp.setNextStateNum(0);

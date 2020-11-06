@@ -15,7 +15,7 @@ package assignment;
 public class NfaState {
 	
 	public static final char EPSILON         = 0,         // Character code for epsilon
-	                         ACCEPT          = 1;         // Character code for final stste 
+	                         ACCEPT          = 1;         // Character code for final state
 	                        
 	
 	                        	
