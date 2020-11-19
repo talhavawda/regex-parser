@@ -89,11 +89,12 @@ public class Dfa {
     public Dfa() {
     }
 
-    //Todo - add alphabet parameter
-    public Dfa(int[][] transTable, ArrayList<DfaState> states, int size) {
+    //Todo - add alphabet parameter [DONE, reorder the parameter list]
+    public Dfa(int[][] transTable, ArrayList<DfaState> states, int size, Set<String> alphabet) {
        this.transTable = transTable;
        this.states     = states;
        this.size       = size;
+       this.alphabet   = alphabet;
 
        //...
 	    this.trapState = this.states.get(0);
