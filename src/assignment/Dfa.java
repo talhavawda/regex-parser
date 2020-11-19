@@ -173,16 +173,33 @@ public class Dfa {
 			transition[START][0] = ACCEPT;
 		}
 
-
+		Set<String> alpha = getAlphabet(n); // can't use class attribute as it is non-static
 		//Todo - SEE SUBSET CONSTRUCTION ALGORITHM IN SLIDES (the mark V as final is already done in the DfaState class)
 
+		// need to check the logic of this, i copied directly from the slides
 		while (!dfaStatesQueue.isEmpty()) {
+			DfaState T = dfaStatesQueue.remove();
+			// dfaStates.add(T);
+			for (String a : alpha){
+				HashSet<NfaState> V = epsilonClosure((move(T.getNfaStateSet(), a.charAt(0))));// should be a single character - get first
+				if (!dfaStates.contains(V)) {
+					DfaState d = new DfaState( V);
+					dfaStates.add(d);
+					dfaStatesQueue.add(d);
+					/*for (NfaState v : V){
 
+
+					}*/
+
+				}
+				transition[dfaStates.indexOf(T)][ a.charAt(0)] = dfaStates.indexOf(V);
+			}
 		}
 
 
 		Dfa d = new Dfa();
 		//...
+
 		return d;
    }
 
@@ -194,7 +211,24 @@ public class Dfa {
 
 		HashSet<NfaState> ec = (HashSet<NfaState>) nfaStates.clone();
 		//...
+		Stack<NfaState> epsilonStates = new Stack<NfaState>();
+		for (NfaState n : nfaStates){
+			// if there are transitions and if any of the transitions are on epsilon
+			if (n.getNext1() != null && n.getNext1().getSymbol() == NfaState.EPSILON || n.getNext2() != null && n.getNext2().getSymbol() == NfaState.EPSILON ) {
+				if (n.getNext1() != null && n.getNext1().getSymbol() == NfaState.EPSILON ) epsilonStates.push( n.getNext1());
+				if (n.getNext2() != null && n.getNext2().getSymbol() == NfaState.EPSILON ) epsilonStates.push(n.getNext2());
+				// while you can still find epsilon transitions for this specific path
+				while (!epsilonStates.empty()){
+					NfaState nextState = epsilonStates.pop();
+					ec.add(nextState);
+					if (nextState.getNext1() != null && nextState.getNext1().getSymbol() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
+					if (nextState.getNext2() != null && nextState.getNext2().getSymbol() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
+				}
 
+			}
+
+
+		}
 		return ec;
 	}
 
@@ -207,9 +241,12 @@ public class Dfa {
 	public static HashSet<NfaState> move(HashSet<NfaState> nfaStates, char symbol) {
 
 		HashSet<NfaState> move = new HashSet<NfaState>();
-
 		//...
+		for (NfaState n : nfaStates){
+			NfaState nextState = n.getNext1(); // next 1 only bc next2 is either null or epsilon
+			if (nextState != null && nextState.getSymbol() == symbol) move.add(nextState);
 
+		}
 		return move;
 	}
 
