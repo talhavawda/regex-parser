@@ -30,9 +30,13 @@ public class RunAssignment {
 		//Nfa n = re.makeNfa();
 
 		//Create DFA
+			//Dfa d = Dfa.makeDfa(n)
+
+		//Create DfaAcceptor
+			//DfaAcceptor da = new DfaAcceptor(d)
 
 		//for each test string for this regex: (traverse the DFA and determine if the DFA accepts/rejects this string)
-
+			//i.e. da.accept(string)
 
 	}
 }
