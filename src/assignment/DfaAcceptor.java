@@ -12,6 +12,33 @@ public class DfaAcceptor {
 					->> Divya and I are not entirely completed with the code, but assume that everything works when coding this class
 						i.e. The transition table is created correctly etc.
 
+						q  = s0
+    x = 1st input symbol
+    while x ≠  eof  {
+         q  =  δ(q,x)
+         x  =  next input symbol
+     }
+     if q ∈ F
+         input recognised
+     else
+         input not recognised	 */
+	public Dfa dfa;
+	protected int stateAt=1;
+    public DfaAcceptor(Dfa dfa){
+        this.dfa=dfa;
+    }
 
-	 */
+    public boolean accept(String input){
+        for(int i=0; i<input.length(); i++){
+            stateAt=dfa.transTable[stateAt][input.charAt(i)]; //stateAt is initially set to start state
+            if(stateAt==0){
+                return false; // checks if its in trap state
+            }
+        }
+
+        if (stateAt==Dfa.ACCEPT){
+            return true;
+        }
+        else return false;
+    }
 }
