@@ -48,7 +48,6 @@ public class RunAssignment {
 				System.out.println("IOException encountered");
 				ex.printStackTrace();
 			}
-
 			
 			//Create DFA from the NFA using Subset Construction
 			System.out.println("\n=============== Converting NFA to DFA ===============");

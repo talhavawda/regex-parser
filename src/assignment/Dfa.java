@@ -93,7 +93,13 @@ public class Dfa {
     public Dfa() {
     }
 
-
+	/**
+	 *
+	 * @param transTable a transition table for the dfa this is being assigned to
+	 * @param states the states of the dfa this is being assigned to
+	 * @param alphabet the alphabet of the dfa this is being assigned to
+	 * @param size the size  of the dfa this is being assigned to
+	 */
     public Dfa(int[][] transTable, ArrayList<DfaState> states, Set<Character> alphabet, int size) {
        this.transTable = transTable;
        this.states     = states;
@@ -115,16 +121,27 @@ public class Dfa {
 		    }
 	    }
    }
-    
-   int[][] getTransTable() {
+
+	/**
+	 * @return the transition table for the dfa
+	 */
+	int[][] getTransTable() {
 	   return transTable;
    }
-   
-   int getSize()  {
+
+	/**
+	 *
+	 * @return the number of states in the dfa
+	 */
+	int getSize()  {
 	   return size;
    }
 
 
+	/**
+	 *
+	 * @return the states in the dfa
+	 */
 	ArrayList<DfaState> getStates() {
     	return states;
    }
@@ -216,6 +233,7 @@ public class Dfa {
 				}
 
 				int symbolCol = (int)a - sigmaLower + 1; //+1 because column at index 0 is for whether the state is an Accept State or not
+
 				transition[dfaStates.indexOf(T)][symbolCol] = dfaStates.indexOf(V);
 			}
 		}
@@ -225,6 +243,7 @@ public class Dfa {
 
 
 	/**
+	 * @param nfaStates the set of nfa states that represent the single dfa state
 	 * @return the set of all states reachable on epsilon transitions from each individual NFA State in the nfaStates set
 	 */
 	public static HashSet<NfaState> epsilonClosure(HashSet<NfaState> nfaStates) {
@@ -235,7 +254,6 @@ public class Dfa {
 		for (NfaState n : nfaStates){
 			/*
 			getNext1() corresponds to getSymbol()
-			getNext2() corresponds to getSymbol2()
 			i.e. you transition from current state to getNext1() on getSymbol1() (or range [getSymbol1(), getSymbol2()]
 			 */
 
@@ -269,10 +287,9 @@ public class Dfa {
 		HashSet<NfaState> move = new HashSet<NfaState>();
 		//...
 		for (NfaState n : nfaStates){
-			NfaState nextState = n.getNext1(); // next 1 only bc next2 is either null or epsilon, doesn't count for this stage
+			NfaState nextState = n.getNext1(); // next1 only because next2 is either null or epsilon, doesn't count for this stage
 			/*
 			getNext1() corresponds to getSymbol()
-			getNext2() corresponds to getSymbol2()
 			i.e. you transition from current state to getNext1() on getSymbol1() (or range [getSymbol1(), getSymbol2()]
 			 */
 			if (nextState != null) {
@@ -294,6 +311,10 @@ public class Dfa {
 	}
 
 
+	/**
+	 * @param n The original nfa we wish to convert to a dfa
+	 * @return the alphabet of the regular language the nfa describes
+	 */
 	public static Set<Character> getAlphabet(Nfa n) {
 
 		//Made the BaseType String as it wont accept the primitive char type
@@ -327,6 +348,11 @@ public class Dfa {
 
 		return alphabet;
 	}
+
+	/**
+	 * @param alphabet The alphabet of the NFA
+	 * @return the highest and lowest unicode values for the alphabet
+	 */
 
 	public static int[] getSigmaLowerAndUpper(Set<Character> alphabet){
 
