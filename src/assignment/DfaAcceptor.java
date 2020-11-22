@@ -65,7 +65,7 @@ public class DfaAcceptor {
 
 		//We have now finished reading in the input
 
-		return dfa.transTable[ stateAt ][0]== Dfa.ACCEPT;  //if the last state we in is an Accept State then return true, else return false - ACCEPT states are flagged by the value of the first column in the transition table
+		return dfa.transTable[stateAt][0]== Dfa.ACCEPT;  //if the last state we in is an Accept State then return true, else return false - ACCEPT states are flagged by the value of the first column in the transition table
 
 	}
 }

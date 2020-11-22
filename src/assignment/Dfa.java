@@ -315,9 +315,22 @@ public class Dfa {
 
 			NfaState state = states.pop();
 			char symbol = state.symbol;
+			char symbol2 = state.symbol2;
 
 			if (symbol != NfaState.ACCEPT && symbol != NfaState.EPSILON) {
 				alphabet.add(symbol); //add() first checks to see if the element is already in the set or not
+
+				if (symbol2 > symbol) { //if transitioning on a character class
+					int symbolASCII = (int) symbol;
+					int symbol2ASCII = (int) symbol2;
+
+					//For the remaining characters in the character class, add it to the alphabet
+					for (int a = symbolASCII+1; a <= symbol2ASCII; a++) {
+						char c = (char) a;
+						alphabet.add(c);
+
+					}
+				}
 			}
 
 			if (state.next1 != null && !statesChecked.contains(state.next1)) {
