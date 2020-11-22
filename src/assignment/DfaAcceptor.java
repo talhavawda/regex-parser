@@ -46,12 +46,21 @@ public class DfaAcceptor {
 		int stateAt = Dfa.START; //stateAt is initially set to the Start State
 
 		for (int i = 0; i < input.length(); i++){ //traverse through the input string - each input symbol at a time
-			//Todo - the actual index (fix bug)
-			stateAt =dfa.transTable[stateAt][input.charAt(i)]; //transition to the next state based on the current input symbol
+
+			char symbol = input.charAt(i);
+			int symbolASCII = (int) symbol;
+
+			if (symbolASCII < dfa.SIGMA_LOWER || symbolASCII> dfa.SIGMA_UPPER ) {
+				return false; //the symbol is not part of the alphabet defined by the language that this DFA represents, so REJECT the input string
+			}
+
+			int symbolCol = symbolASCII - dfa.SIGMA_LOWER + 1; //+1 because column at index 0 is for whether the state is an Accept State or not
+			stateAt = dfa.transTable[stateAt][symbolCol]; //transition to the next state based on the current input symbol
 
 			if(stateAt == Dfa.TRAP) { // checks if its in trap state
 				return false; //Reject the input string
 			}
+
 		}
 
 		//We have now finished reading in the input

@@ -9,11 +9,12 @@
 			-> Just added them to have the fields to represent the 5-tuple formal definition of a DFA
 				-> We may or may not use some of these fields as some of these properties can be obtained from each DfaState themself
 		3. Created a static method makeDfa() to make and return a DFA based on the NFA parameter using the Subset Construction method
-			Todo - finish coding this method
 		4. Created the static methods epsilonClosure() and move(), to be called in the makeDfa method()
-			Todo - code these methods
 		5. Created the static method getAlphabet() to be called in the makeDfa method()
-		Todo - character class
+		6. Changed SIGMA_LOWER and SIGMA_UPPER to non-static variables, so each DFA has its own values for it depending on its alphabet
+		7. Created the static method getSigmaLowerAndUpper() to get the SIGMA_LOWER and SIGMA_UPPER of a specific alphabet
+
+
 
  */
 
@@ -43,13 +44,16 @@ public class Dfa {
 	 *    For these constants to be useful, you should use them in your code rather 
 	 *    than hardcode them.     
 	 */	
-	
-    public static final int SIGMA_LOWER = 32;
-    public static final int SIGMA_UPPER = 127;
+
+
     public static final int MAX_STATES  = 256;
     public static final int ACCEPT      = -1;
     public static final int START       = 1;
     public static final int TRAP        = 0;
+
+	//Changed SIGMA_LOWER and SIGMA_UPPER to non-static variables, so each DFA has its own values for it depending on its alphabet
+	public int SIGMA_LOWER = 32;
+	public int SIGMA_UPPER = 127;
     
     /*
      *  The structure of the transition table "transTable" is as follows
@@ -89,13 +93,16 @@ public class Dfa {
     public Dfa() {
     }
 
-    //Todo - add alphabet parameter [DONE, reorder the parameter list]
+
     public Dfa(int[][] transTable, ArrayList<DfaState> states, Set<Character> alphabet, int size) {
        this.transTable = transTable;
        this.states     = states;
-	    this.alphabet   = alphabet;
+       this.alphabet   = alphabet;
        this.size       = size;
 
+	    int[] sigmaLU = getSigmaLowerAndUpper(alphabet);
+	    this.SIGMA_LOWER = sigmaLU[0];
+	    this.SIGMA_UPPER = sigmaLU[1];
 
 	    this.trapState = this.states.get(0); //DfaState with stateNumber == 0 (which is at index 0) is the Trap State
 	    this.startState = this.states.get(1); //DfaState with stateNumber == 1 (which is at index 1) is the Start State
@@ -131,15 +138,20 @@ public class Dfa {
 
 		int size = 0;
     	ArrayList<DfaState> dfaStates = new ArrayList<DfaState>(); //this is to store all the dfaStates for the DFA; will be set as the states field in the DFA object
+		Set<Character> alpha = getAlphabet(n); //the alphabet for this DFA
 
 		/*
-			adding extra column for whether the state is ACCEPT or NON_ACCEPT state (this is col 0)
-				-> Todo - this is based on the design sir gave. we can change this design by removing this column 0
+			Column 0 is for whether the state is an ACCEPT State or a REJECT (non-ACCEPT) State
 					-> The DfaState itself has a field and method to get whether it is an accept state or not, so we can use that for the conditional statement
 						(That get method will be used to populate this column anyway, so IF we remove this column we can save execution time)
 						(But its probably just better to just follow the design sir gave us)
 		 */
-		int columns = SIGMA_UPPER - SIGMA_LOWER + 2; // ( SIGMA_UPPER - SIGMA_LOWER + 1) for the character symbols then another +1 as the first column is for whether that State is an accept state or not
+
+		int[] sigmaLU = getSigmaLowerAndUpper(alpha);
+		int sigmaLower = sigmaLU[0];
+		int sigmaUpper = sigmaLU[1];
+
+		int columns = sigmaUpper - sigmaLower + 2; // (sigmaUpper - sigmaLower + 1) for the character symbols then another +1 as the first column is for whether that State is an accept state or not
 		int [][] transition = new int[MAX_STATES][columns]; //transition table
 
 
@@ -149,7 +161,7 @@ public class Dfa {
     	 */
     	HashSet<NfaState> trapStateSet = new HashSet<NfaState>(); //is currently empty and will remain so as we are not adding any elements to it
     	DfaState trapState = new DfaState(trapStateSet); //its stateNumber is 0 (== TRAP)
-	    dfaStates.add(trapState);
+	    dfaStates.add(trapState); //index 0
 	    size++;
 
 	    for (int j = 0; j < columns; j++) {
@@ -165,7 +177,7 @@ public class Dfa {
 	    startStateSet = epsilonClosure(startStateSet);
 
 	    DfaState startState = new DfaState(startStateSet); //its stateNumber is 1 (== START)
-		dfaStates.add(startState);
+		dfaStates.add(startState); //index 1
 		size++; //increment the number of DFA states we have created thus far
 
 		dfaStatesQueue.add(startState);
@@ -174,41 +186,41 @@ public class Dfa {
 			transition[START][0] = ACCEPT;
 		}
 
-		Set<Character> alpha = getAlphabet(n); //the alphabet for this DFA
-		//Todo - SEE SUBSET CONSTRUCTION ALGORITHM IN SLIDES (the mark V as final is already done in the DfaState class)
 
 		while (!dfaStatesQueue.isEmpty()) {
 			DfaState T = dfaStatesQueue.remove();
 
 			for (Character a : alpha){
-				HashSet<NfaState> V = epsilonClosure((move(T.getNfaStateSet(), a)));// should be a single character - get first
+				HashSet<NfaState> nfaStateSet = epsilonClosure((move(T.getNfaStateSet(), a)));// should be a single character - get first
+				DfaState V = new DfaState(nfaStateSet);
 
-				//Todo - if epsilonClosure() is empty then transition to trap State
-
-				if (!dfaStates.contains(V)) {
-					DfaState d = new DfaState(V);
-					dfaStates.add(d);
-					size++;
-
-					dfaStatesQueue.add(d);
-					/*for (NfaState v : V){
-
-
-					}*/
-
+				//There is a transition to this trap state when epsilon-closure(move(<DfaState>,<symbol>)) = {} (results in an empty set - no set of NFA states to transition to )
+				if (V.getNfaStateSet().isEmpty()) {
+					int symbolCol = (int)a - sigmaLower + 1; //+1 because column at index 0 is for whether the state is an Accept State or not
+					transition[dfaStates.indexOf(T)][symbolCol] = TRAP;
+					continue; //dont execute the code below for this char, but go to the next char and start again this loop for it
 				}
-				transition[dfaStates.indexOf(T)][a] = dfaStates.indexOf(V);
+
+				if (!dfaStates.contains(V)) { //will call the equals() method in the DfaState class
+					dfaStates.add(V);
+					size++;
+					dfaStatesQueue.add(V);
+
+				} else { //if the same DFA State as V is already created.. [2 DFA States are equal if they are made up of the same set of NFA States]
+					//get the index of the DfaState that contains the same NFA States set as V
+					int index = dfaStates.indexOf(V); //will call the equals() method in the DfaState class
+					V = dfaStates.get(index); // V points to that DFA State already created that is the same as it
+				}
+
+				int symbolCol = (int)a - sigmaLower + 1; //+1 because column at index 0 is for whether the state is an Accept State or not
+				transition[dfaStates.indexOf(T)][symbolCol] = dfaStates.indexOf(V);
 			}
 		}
 
-
-		Dfa d = new Dfa();
-		//...
-
-		return d;
+		return new Dfa(transition, dfaStates, alpha, size);
    }
 
-	//TODO
+
 	/**
 	 * @return the set of all states reachable on epsilon transitions from each individual NFA State in the nfaStates set
 	 */
@@ -237,7 +249,7 @@ public class Dfa {
 		return ec;
 	}
 
-	//TODO
+
 	/**
 	 * @param nfaStates
 	 * @param symbol
@@ -249,7 +261,20 @@ public class Dfa {
 		//...
 		for (NfaState n : nfaStates){
 			NfaState nextState = n.getNext1(); // next 1 only bc next2 is either null or epsilon
-			if (nextState != null && nextState.getSymbol() == symbol) move.add(nextState);
+
+			if (nextState != null) {
+				//if (nextState.getSymbol2() == NfaState.EPSILON) { //the transition is on a single transition
+				if (nextState.getSymbol2() < nextState.getSymbol()) { //the transition is on a single transition
+					if (nextState.getSymbol() == symbol) {
+						move.add(nextState);
+					}
+				} else { //The transition is on a character class
+					if (symbol >= nextState.getSymbol() && symbol <= nextState.getSymbol2()) {
+						move.add(nextState);
+					}
+				}
+			}
+
 
 		}
 		return move;
@@ -288,6 +313,27 @@ public class Dfa {
 		}
 
 		return alphabet;
+	}
+
+	public static int[] getSigmaLowerAndUpper(Set<Character> alphabet){
+
+		int sigmaLower = 127; //initialise low to highest value
+		int sigmaUpper = 32;  //initialise high to lowest value
+
+		for (Character c: alphabet) {
+			int cAsInt = (int) c;
+
+			if (cAsInt < sigmaLower) {
+				sigmaLower = cAsInt;
+			}
+
+			if (cAsInt > sigmaUpper) {
+				sigmaUpper = cAsInt;
+			}
+		}
+
+		int[] sigLU = {sigmaLower, sigmaUpper}; //sigLU[0] = sigmaLower, sigLU[1] = sigmaUpper
+		return  sigLU;
 	}
 
 }
