@@ -24,21 +24,19 @@ public class DfaAcceptor {
          input not recognised	 */
 	public Dfa dfa;
 	protected int stateAt=1;
-    public DfaAcceptor(Dfa dfa){
-        this.dfa=dfa;
-    }
+	public DfaAcceptor(Dfa dfa){
+		this.dfa=dfa;
+	}
 
-    public boolean accept(String input){
-        for(int i=0; i<input.length(); i++){
-            stateAt=dfa.transTable[stateAt][input.charAt(i)]; //stateAt is initially set to start state
-            if(stateAt==0){
-                return false; // checks if its in trap state
-            }
-        }
+	public boolean accept(String input){
+		for(int i=0; i<input.length(); i++){
+			stateAt=dfa.transTable[stateAt][input.charAt(i)]; //stateAt is initially set to start state
+			if(stateAt==0){
+				return false; // checks if its in trap state
+			}
+		}
 
-        if (stateAt==Dfa.ACCEPT){
-            return true;
-        }
-        else return false;
-    }
+		return stateAt == Dfa.ACCEPT;  //if (stateAt == Dfa.ACCEPT) then return true, else return false
+
+	}
 }
