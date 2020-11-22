@@ -19,7 +19,8 @@ public class RunAssignment {
 
 		Scanner file = new Scanner(new File("TestData.txt"));	//A file to read the test data from the text file
 
-		System.out.println("COMP314 Assignment 1\n\nConverting Regular Expressions to DFAs and\nfor each regular expression, using the DFA to check \nwhether an entered string is a member of the language that the regular expression denotes\n\n");
+		System.out.println("COMP314 Assignment 1\n\nConverting Regular Expressions to DFAs and\nfor each regular expression, using the DFA to check \nwhether an entered string is a member of the language that the regular expression denotes\n");
+		System.out.println("Developed by Group P:\n\tTalha Vawda\n\tDivya Soomaroo\n\tAdin Arumugam\n\tKhulekani Mfeka\n\n");
 
 		while(file.hasNextLine()) {	//traversing through TestData file
 

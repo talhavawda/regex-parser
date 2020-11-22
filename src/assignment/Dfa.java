@@ -94,11 +94,13 @@ public class Dfa {
     }
 
 	/**
+	 * The constructor to create a DFA object
+	 * THe components of the DFA are passed in as parameters
 	 *
-	 * @param transTable a transition table for the dfa this is being assigned to
-	 * @param states the states of the dfa this is being assigned to
-	 * @param alphabet the alphabet of the dfa this is being assigned to
-	 * @param size the size  of the dfa this is being assigned to
+	 * @param transTable the transition table of the DFA this DFA is being assigned to
+	 * @param states the states of the DFA that this DFA is being assigned to
+	 * @param alphabet the alphabet of the DFA that this is being assigned to
+	 * @param size the size of the DFA that this is being assigned to
 	 */
     public Dfa(int[][] transTable, ArrayList<DfaState> states, Set<Character> alphabet, int size) {
        this.transTable = transTable;
@@ -111,7 +113,7 @@ public class Dfa {
 	    this.SIGMA_UPPER = sigmaLU[1];
 
 	    this.trapState = this.states.get(0); //DfaState with stateNumber == 0 (which is at index 0) is the Trap State
-	    this.startState = this.states.get(1); //DfaState with stateNumber == 1 (which is at index 1) is the Start State
+	    this.startState = this.states.get(1); //DfaState with skm,tateNumber == 1 (which is at index 1) is the Start State
 
 	    this.acceptStates = new HashSet<DfaState>();
 
@@ -153,7 +155,7 @@ public class Dfa {
 	 */
 	public static Dfa makeDfa(Nfa n) {
 
-		int size = 0;
+		int size = 0; //the number of states in the DFA
     	ArrayList<DfaState> dfaStates = new ArrayList<DfaState>(); //this is to store all the dfaStates for the DFA; will be set as the states field in the DFA object
 		Set<Character> alpha = getAlphabet(n); //the alphabet for this DFA
 
@@ -165,8 +167,8 @@ public class Dfa {
 		 */
 
 		int[] sigmaLU = getSigmaLowerAndUpper(alpha);
-		int sigmaLower = sigmaLU[0];
-		int sigmaUpper = sigmaLU[1];
+		int sigmaLower = sigmaLU[0]; //the lower bound character of the alphabet
+		int sigmaUpper = sigmaLU[1]; //the upper bound character of the alphabet
 
 		int columns = sigmaUpper - sigmaLower + 2; // (sigmaUpper - sigmaLower + 1) for the character symbols then another +1 as the first column is for whether that State is an accept state or not
 		int [][] transition = new int[MAX_STATES][columns]; //transition table
@@ -188,6 +190,9 @@ public class Dfa {
 
 	    Queue<DfaState> dfaStatesQueue = new LinkedList<DfaState>(); //this will be used to keep track of DFA states generated but still yet to be expanded
 
+
+		//Create the Start State
+
 	    HashSet<NfaState> startStateSet = new HashSet<NfaState>();
 	    startStateSet.add(n.start); //add the Start State of the NFA
 
@@ -203,12 +208,17 @@ public class Dfa {
 			transition[START][0] = ACCEPT;
 		}
 
+		/*
+			Generate DFA states and populate the transition table
+		 */
 
 		while (!dfaStatesQueue.isEmpty()) {
+
 			DfaState T = dfaStatesQueue.remove();
 
-			for (Character a : alpha){
-				HashSet<NfaState> nfaStateSet = epsilonClosure((move(T.getNfaStateSet(), a)));// should be a single character - get first
+			for (Character a : alpha){ //for each character in the alphabet
+
+				HashSet<NfaState> nfaStateSet = epsilonClosure((move(T.getNfaStateSet(), a))); //the set of NFA states you can move to from the set of NFA states (a DFA State) T
 				DfaState V = new DfaState(nfaStateSet);
 
 				//There is a transition to this trap state when epsilon-closure(move(<DfaState>,<symbol>)) = {} (results in an empty set - no set of NFA states to transition to )
@@ -218,7 +228,8 @@ public class Dfa {
 					continue; //dont execute the code below for this char, but go to the next char and start again this loop for it
 				}
 
-				if (!dfaStates.contains(V)) { //will call the equals() method in the DfaState class
+				//If this DFA state that was generated hasn't been created yet
+				if (!dfaStates.contains(V)) { //contains() will call the equals() method in the DfaState class
 					dfaStates.add(V);
 					size++;
 					dfaStatesQueue.add(V);
@@ -234,13 +245,14 @@ public class Dfa {
 					V = dfaStates.get(index); // V points to that DFA State already created that is the same as it
 				}
 
+				//the column number of this symbol in the transition table
 				int symbolCol = (int)a - sigmaLower + 1; //+1 because column at index 0 is for whether the state is an Accept State or not
 
 				transition[dfaStates.indexOf(T)][symbolCol] = dfaStates.indexOf(V);
 			}
 		}
 
-		return new Dfa(transition, dfaStates, alpha, size);
+		return new Dfa(transition, dfaStates, alpha, size); //return the resulting DFA that was created
    }
 
 
@@ -251,15 +263,18 @@ public class Dfa {
 	public static HashSet<NfaState> epsilonClosure(HashSet<NfaState> nfaStates) {
 
 		HashSet<NfaState> epsilonClosure = (HashSet<NfaState>) nfaStates.clone();
-		//...
+
 		Stack<NfaState> epsilonStatesStack = new Stack<NfaState>();
+
 		for (NfaState n : nfaStates){
+
 			epsilonStatesStack.push(n);
 
 			while (!epsilonStatesStack.empty()) {
+
 				NfaState t = epsilonStatesStack.pop();
 
-				//Because of Thompson's Construction, NfaState t has a max of 2 epsilon transitions from it
+				//Because the NFA was created using Thompson's Construction, NfaState t has a max of 2 epsilon transitions from it
 
 				if (t.getNext1() != null && t.getSymbol() == NfaState.EPSILON) {
 					epsilonClosure.add(t.getNext1()); //add() will first check if next2 is already in it or not
@@ -288,7 +303,9 @@ public class Dfa {
 		HashSet<NfaState> move = new HashSet<NfaState>();
 		//...
 		for (NfaState n : nfaStates){
+
 			NfaState nextState = n.getNext1(); // next1 only because next2 is either null or epsilon, doesn't count for this stage
+
 			/*
 			getNext1() corresponds to getSymbol()
 			i.e. you transition from current state to getNext1() on getSymbol1() (or range [getSymbol1(), getSymbol2()]
@@ -313,8 +330,8 @@ public class Dfa {
 
 
 	/**
-	 * @param n The original nfa we wish to convert to a dfa
-	 * @return the alphabet of the regular language the nfa describes
+	 * @param n The original nfa we wish to convert to a DFA
+	 * @return the alphabet of the regular language the NFA describes
 	 */
 	public static Set<Character> getAlphabet(Nfa n) {
 
