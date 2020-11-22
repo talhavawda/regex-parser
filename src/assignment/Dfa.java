@@ -205,6 +205,9 @@ public class Dfa {
 					dfaStates.add(V);
 					size++;
 					dfaStatesQueue.add(V);
+					if (V.isAcceptState()) {
+						transition[dfaStates.indexOf(V)][0] = ACCEPT;
+					}
 
 				} else { //if the same DFA State as V is already created.. [2 DFA States are equal if they are made up of the same set of NFA States]
 					//get the index of the DfaState that contains the same NFA States set as V
@@ -230,16 +233,22 @@ public class Dfa {
 		//...
 		Stack<NfaState> epsilonStates = new Stack<NfaState>();
 		for (NfaState n : nfaStates){
-			// if there are transitions and if any of the transitions are on epsilon
-			if (n.getNext1() != null && n.getNext1().getSymbol() == NfaState.EPSILON || n.getNext2() != null && n.getNext2().getSymbol() == NfaState.EPSILON ) {
-				if (n.getNext1() != null && n.getNext1().getSymbol() == NfaState.EPSILON ) epsilonStates.push( n.getNext1());
-				if (n.getNext2() != null && n.getNext2().getSymbol() == NfaState.EPSILON ) epsilonStates.push(n.getNext2());
+			/*
+			getNext1() corresponds to getSymbol()
+			getNext2() corresponds to getSymbol2()
+			i.e. you transition from current state to getNext1() on getSymbol1() (or range [getSymbol1(), getSymbol2()]
+			 */
+
+			// NFA created such that states null by defaul and symbol2 set to epsilon => check if both there is a next state and if you transition to it on epsilon
+			if (n.getNext1() != null && n.getSymbol() == NfaState.EPSILON || n.getNext2() != null && n.getSymbol2() == NfaState.EPSILON ) {
+				if (n.getNext1() != null && n.getSymbol() == NfaState.EPSILON ) epsilonStates.push( n.getNext1());
+				if (n.getNext2() != null && n.getSymbol2() == NfaState.EPSILON ) epsilonStates.push(n.getNext2());
 				// while you can still find epsilon transitions for this specific path
 				while (!epsilonStates.empty()){
 					NfaState nextState = epsilonStates.pop();
 					ec.add(nextState);
-					if (nextState.getNext1() != null && nextState.getNext1().getSymbol() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
-					if (nextState.getNext2() != null && nextState.getNext2().getSymbol() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
+					if (nextState.getNext1() != null && nextState.getSymbol() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
+					if (nextState.getNext2() != null && nextState.getSymbol2() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
 				}
 
 			}
@@ -260,16 +269,20 @@ public class Dfa {
 		HashSet<NfaState> move = new HashSet<NfaState>();
 		//...
 		for (NfaState n : nfaStates){
-			NfaState nextState = n.getNext1(); // next 1 only bc next2 is either null or epsilon
-
+			NfaState nextState = n.getNext1(); // next 1 only bc next2 is either null or epsilon, doesn't count for this stage
+			/*
+			getNext1() corresponds to getSymbol()
+			getNext2() corresponds to getSymbol2()
+			i.e. you transition from current state to getNext1() on getSymbol1() (or range [getSymbol1(), getSymbol2()]
+			 */
 			if (nextState != null) {
 				//if (nextState.getSymbol2() == NfaState.EPSILON) { //the transition is on a single transition
-				if (nextState.getSymbol2() < nextState.getSymbol()) { //the transition is on a single transition
-					if (nextState.getSymbol() == symbol) {
+				if (n.getSymbol2() < n.getSymbol()) { //the transition is on a single transition
+					if (n.getSymbol() == symbol) {
 						move.add(nextState);
 					}
 				} else { //The transition is on a character class
-					if (symbol >= nextState.getSymbol() && symbol <= nextState.getSymbol2()) {
+					if (symbol >= n.getSymbol() && symbol <= n.getSymbol2()) {
 						move.add(nextState);
 					}
 				}
