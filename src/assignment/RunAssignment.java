@@ -19,6 +19,7 @@ public class RunAssignment {
 
 		Scanner file = new Scanner(new File("TestData.txt"));	//A file to read the test data from the text file
 
+		System.out.println("COMP314 Assignment 1\n\nConverting Regular Expressions to DFAs and\nfor each regular expression, using the DFA to check \nwhether an entered string is a member of the language that the regular expression denotes\n\n");
 
 		while(file.hasNextLine()) {	//traversing through TestData file
 
@@ -62,7 +63,7 @@ public class RunAssignment {
 			//for each test string for this regular expression: traverse the DFA and determine if the DFA accepts/rejects this string
 
 
-			System.out.println("\n\n========== Loading test data for regex:   " + reString + "  ==========");
+			System.out.println("\n\n========== Loading test strings for regular expression:   " + reString + "  ==========");
 
 			String test = ""; //store test string
 
@@ -72,7 +73,7 @@ public class RunAssignment {
 
 			do{
 				if(test.equals("")){ //empty test string
-					System.out.println("\nTesting an EMPTY STRING");
+					System.out.println("\nTesting the EMPTY STRING");
 				}
 				else{ //non-empty test string
 					System.out.println("\nTesting the string: " + test);
@@ -95,7 +96,7 @@ public class RunAssignment {
 		
 		}
 		
-		System.out.println("RunAssignment Completed Successfully! \nThank You!");
+		System.out.println("RunAssignment has Completed Successfully! \nThank You!");
 		
 	}
 }

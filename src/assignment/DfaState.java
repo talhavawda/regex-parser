@@ -5,6 +5,7 @@ import java.util.Objects;
 
 /**
  * A Class to represent a single state in the DFA (which is constructed from the NFA by Subset Construction)
+ * A state in the DFA represents a set of states in the NFA
  */
 public class DfaState  {
 
