@@ -1,0 +1,312 @@
+COMP314 Assignment 1
+
+Converting Regular Expressions to DFAs and
+for each regular expression, using the DFA to check 
+whether an entered string is a member of the language that the regular expression denotes
+
+Developed by Group P:
+	Talha Vawda
+	Divya Soomaroo
+	Adin Arumugam
+	Khulekani Mfeka
+
+
+=============== Converting regular expression  "a"  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  "a"  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   "a"  ==========
+
+Testing the string: a
+String ACCEPTED!
+
+Testing the string: aa
+String REJECTED!
+
+Testing the string: b
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  "a" |  "b"  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  "a" |  "b"  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   "a" |  "b"  ==========
+
+Testing the string: a
+String ACCEPTED!
+
+Testing the string: b
+String ACCEPTED!
+
+Testing the string: c
+String REJECTED!
+
+Testing the string: ab
+String REJECTED!
+
+Testing the string: ba
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  "a""b"  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  "a""b"  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   "a""b"  ==========
+
+Testing the string: ab
+String ACCEPTED!
+
+Testing the string: a
+String REJECTED!
+
+Testing the string: b
+String REJECTED!
+
+Testing the string: c
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  "a"*  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  "a"*  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   "a"*  ==========
+
+Testing the EMPTY STRING
+String ACCEPTED!
+
+Testing the string: a
+String ACCEPTED!
+
+Testing the string: aa
+String ACCEPTED!
+
+Testing the string: aaaaaa
+String ACCEPTED!
+
+Testing the string: aab
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  "a"+  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  "a"+  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   "a"+  ==========
+
+Testing the EMPTY STRING
+String REJECTED!
+
+Testing the string: a
+String ACCEPTED!
+
+Testing the string: aa
+String ACCEPTED!
+
+Testing the string: aaaaaa
+String ACCEPTED!
+
+Testing the string: aab
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  "a"?  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  "a"?  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   "a"?  ==========
+
+Testing the EMPTY STRING
+String ACCEPTED!
+
+Testing the string: a
+String ACCEPTED!
+
+Testing the string: aa
+String REJECTED!
+
+Testing the string: aaaaaa
+String REJECTED!
+
+Testing the string: aab
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  [a-c]  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  [a-c]  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   [a-c]  ==========
+
+Testing the string: a
+String ACCEPTED!
+
+Testing the string: b
+String ACCEPTED!
+
+Testing the string: c
+String ACCEPTED!
+
+Testing the string: aa
+String REJECTED!
+
+Testing the string: d
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  ("a" | "b")* "a" "b". "b"  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  ("a" | "b")* "a" "b". "b"  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   ("a" | "b")* "a" "b". "b"  ==========
+
+Testing the string: abb
+String ACCEPTED!
+
+Testing the string: aaaaaacbcbbvbcxvbcbcbab
+String REJECTED!
+
+Testing the string: bbabababababababababb
+String ACCEPTED!
+
+Testing the string: aaaabbbbabc
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+=============== Converting regular expression  ("a" "b"?)*  to RegExp expression tree ===============
+Successfully Converted!
+
+=============== Converting regular expression  ("a" "b"?)*  to NFA ===============
+Successfully Converted!
+
+=============== Converting NFA to DFA ===============
+Successfully Converted!
+
+=============== Creating DFA Acceptor for this DFA ===============
+Successfully Created!
+
+
+========== Loading test strings for regular expression:   ("a" "b"?)*  ==========
+
+Testing the string: ab
+String ACCEPTED!
+
+Testing the string: abab
+String ACCEPTED!
+
+Testing the string: ababab
+String ACCEPTED!
+
+Testing the string: aaaaaaaaa
+String ACCEPTED!
+
+Testing the EMPTY STRING
+String ACCEPTED!
+
+Testing the string: bababa
+String REJECTED!
+
+===========================================================================================================================
+===========================================================================================================================
+
+
+RunAssignment has Completed Successfully! 
+Thank You!
