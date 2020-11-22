@@ -1,11 +1,12 @@
 package assignment;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * A Class to represent a single state in the DFA (which is constructed from the NFA by Subset Construction)
  */
-public class DfaState {
+public class DfaState  {
 
 	private static int nextStateNum = 0;  // Current unique state number
 
@@ -66,5 +67,24 @@ public class DfaState {
 
 	public boolean isTrapState() {
 		return isTrapState;
+	}
+
+
+
+	@Override
+	/**
+	 * 2 DFA States are equal if they are made up of the same set of NFA States
+	 */
+	public boolean equals(Object o) {
+
+		if (o == null || getClass() != o.getClass()) return false;
+
+		HashSet<NfaState> nfaStates = (HashSet<NfaState>) o;
+		return this.nfaStateSet.equals(nfaStates);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nfaStateSet);
 	}
 }
