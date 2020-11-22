@@ -227,9 +227,6 @@ public class Dfa {
 						transition[dfaStates.indexOf(V)][0] = ACCEPT;
 					}
 
-					if (V.isAcceptState()){
-						transition[dfaStates.indexOf(V)][0] = ACCEPT;
-					}
 
 				} else { //if the same DFA State as V is already created.. [2 DFA States are equal if they are made up of the same set of NFA States]
 					//get the index of the DfaState that contains the same NFA States set as V
@@ -257,29 +254,6 @@ public class Dfa {
 		//...
 		Stack<NfaState> epsilonStatesStack = new Stack<NfaState>();
 		for (NfaState n : nfaStates){
-			/*
-			getNext1() corresponds to getSymbol()
-			getNext2() is a transition on epsilon
-			i.e. you transition from current state to getNext1() on getSymbol1() (or range [getSymbol1(), getSymbol2()]
-			 */
-
-			/*
-			// NFA created such that states null by default and symbol2 set to epsilon => check if both there is a next state and if you transition to it on epsilon
-			if (n.getNext1() != null && n.getSymbol() == NfaState.EPSILON ) epsilonStates.push(n.getNext1());
-			if (n.getNext2() != null && n.getSymbol2() == NfaState.EPSILON ) epsilonStates.push(n.getNext2());
-
-				// while you can still find epsilon transitions for this specific path
-
-
-				while (!epsilonStates.empty()){
-					NfaState nextState = epsilonStates.pop();
-					ec.add(nextState);
-					if (nextState.getNext1() != null && nextState.getSymbol() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
-					if (nextState.getNext2() != null && nextState.getSymbol2() == NfaState.EPSILON) epsilonStates.push(nextState.getNext1());
-				}
-
-				*/
-
 			epsilonStatesStack.push(n);
 
 			while (!epsilonStatesStack.empty()) {
