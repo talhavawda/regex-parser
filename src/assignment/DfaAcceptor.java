@@ -46,6 +46,7 @@ public class DfaAcceptor {
 		int stateAt = Dfa.START; //stateAt is initially set to the Start State
 
 		for (int i = 0; i < input.length(); i++){ //traverse through the input string - each input symbol at a time
+			//Todo - the actual index (fix bug)
 			stateAt =dfa.transTable[stateAt][input.charAt(i)]; //transition to the next state based on the current input symbol
 
 			if(stateAt == Dfa.TRAP) { // checks if its in trap state

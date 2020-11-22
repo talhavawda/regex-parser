@@ -90,15 +90,15 @@ public class Dfa {
     }
 
     //Todo - add alphabet parameter [DONE, reorder the parameter list]
-    public Dfa(int[][] transTable, ArrayList<DfaState> states, int size, Set<Character> alphabet) {
+    public Dfa(int[][] transTable, ArrayList<DfaState> states, Set<Character> alphabet, int size) {
        this.transTable = transTable;
        this.states     = states;
+	    this.alphabet   = alphabet;
        this.size       = size;
-       this.alphabet   = alphabet;
 
-       //...
-	    this.trapState = this.states.get(0);
-	    this.startState = this.states.get(1);
+
+	    this.trapState = this.states.get(0); //DfaState with stateNumber == 0 (which is at index 0) is the Trap State
+	    this.startState = this.states.get(1); //DfaState with stateNumber == 1 (which is at index 1) is the Start State
 
 	    this.acceptStates = new HashSet<DfaState>();
 
@@ -110,22 +110,22 @@ public class Dfa {
    }
     
    int[][] getTransTable() {
-	   
 	   return transTable;
    }
    
    int getSize()  {
-	   
 	   return size;
    }
 
+
 	ArrayList<DfaState> getStates() {
-      return states;
+    	return states;
    }
+
 
 	/**
 	 * Use the Subset Construction to create a DFA based on the NFA parameter
-	 * @param n
+	 * @param n - an NFA (which was created using Thompson's Construction)
 	 */
 	public static Dfa makeDfa(Nfa n) {
 
@@ -139,12 +139,12 @@ public class Dfa {
 						(That get method will be used to populate this column anyway, so IF we remove this column we can save execution time)
 						(But its probably just better to just follow the design sir gave us)
 		 */
-		int columns = SIGMA_UPPER - SIGMA_LOWER + 2;
+		int columns = SIGMA_UPPER - SIGMA_LOWER + 2; // ( SIGMA_UPPER - SIGMA_LOWER + 1) for the character symbols then another +1 as the first column is for whether that State is an accept state or not
 		int [][] transition = new int[MAX_STATES][columns]; //transition table
 
 
     	/*
-    	    The Trap State is unique to the DFA and doesnt contain any states from the NF (its nfaStateSet field is empty)
+    	    The Trap State is unique to the DFA and doesnt contain any states from the NFA (its nfaStateSet field is empty)
     	    There is a transition to this trap state when epsilon-closure(move(<DfaState>,<symbol>)) = {} (results in an empty set - no set of NFA states to transition to )
     	 */
     	HashSet<NfaState> trapStateSet = new HashSet<NfaState>(); //is currently empty and will remain so as we are not adding any elements to it
@@ -174,18 +174,22 @@ public class Dfa {
 			transition[START][0] = ACCEPT;
 		}
 
-		Set<Character> alpha = getAlphabet(n); // can't use class attribute as it is non-static
+		Set<Character> alpha = getAlphabet(n); //the alphabet for this DFA
 		//Todo - SEE SUBSET CONSTRUCTION ALGORITHM IN SLIDES (the mark V as final is already done in the DfaState class)
 
-		// need to check the logic of this, i copied directly from the slides
 		while (!dfaStatesQueue.isEmpty()) {
 			DfaState T = dfaStatesQueue.remove();
-			// dfaStates.add(T);
+
 			for (Character a : alpha){
 				HashSet<NfaState> V = epsilonClosure((move(T.getNfaStateSet(), a)));// should be a single character - get first
+
+				//Todo - if epsilonClosure() is empty then transition to trap State
+
 				if (!dfaStates.contains(V)) {
-					DfaState d = new DfaState( V);
+					DfaState d = new DfaState(V);
 					dfaStates.add(d);
+					size++;
+
 					dfaStatesQueue.add(d);
 					/*for (NfaState v : V){
 

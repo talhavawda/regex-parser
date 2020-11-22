@@ -79,8 +79,9 @@ public class DfaState  {
 
 		if (o == null || getClass() != o.getClass()) return false;
 
-		HashSet<NfaState> nfaStates = (HashSet<NfaState>) o;
-		return this.nfaStateSet.equals(nfaStates);
+		DfaState dfaState = (DfaState) o;
+		return this.nfaStateSet.equals(dfaState.nfaStateSet);
+
 	}
 
 	@Override
