@@ -9,7 +9,7 @@ public class DfaState {
 
 	private static int nextStateNum = 0;  // Current unique state number
 
-	private int stateNumber; //the identifier of this state. Will be used to re
+	private int stateNumber; //the identifier of this state. Will be used to represent a DFA State
 	private HashSet<NfaState> nfaStateSet; //the set of states in the NFA that this DFA state represents
 	private boolean isStartState;
 	private boolean isAcceptState; //to represent whether this state is an Accept (Final) State in the DFA or not

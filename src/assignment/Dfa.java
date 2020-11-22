@@ -13,6 +13,7 @@
 		4. Created the static methods epsilonClosure() and move(), to be called in the makeDfa method()
 			Todo - code these methods
 		5. Created the static method getAlphabet() to be called in the makeDfa method()
+		Todo - character class
 
  */
 
@@ -64,8 +65,8 @@ public class Dfa {
      *  
      *  The start state is 1 (START = 1)
      *  
-     *  The List "states" holds as a Set of NfaStates the states from the nfa that make up 
-     *  each dfa state.  Position i in the list holds the nfa states for dfa state i. 
+     *  The List "states" holds as a Set of NfaStates the states from the nfa that make up
+     *  each dfa state (a DfaState).  Position i in the list holds the nfa states for dfa state i.
      *  NB This is, of course, not necessary for using the dfa, but is merely for 
      *  information purposes
      *
@@ -73,16 +74,15 @@ public class Dfa {
      * *** DFA State i in this 'states' field should have its 'stateNumber' field as i
      *  
      */
-    
-    protected int[][]               transTable;
-    protected ArrayList<DfaState>   states;
+
+	protected ArrayList<DfaState>   states;
+	private Set<Character>          alphabet; //Made the BaseType String as it wont accept the primitive char type
+	protected int[][]               transTable;
+	private DfaState                startState;
+	private Set<DfaState>           acceptStates;
+
+	private DfaState                trapState;
     protected int                   size; //the actual number of rows (states) in this DFA -> so dont have to traverse till MAX_STATES
-
-    private Set<String>             alphabet; //Made the BaseType String as it wont accept the primitive char type
-    private DfaState                trapState;
-    private DfaState                startState;
-    private Set<DfaState>           acceptStates;
-
 
 
 
@@ -90,7 +90,7 @@ public class Dfa {
     }
 
     //Todo - add alphabet parameter [DONE, reorder the parameter list]
-    public Dfa(int[][] transTable, ArrayList<DfaState> states, int size, Set<String> alphabet) {
+    public Dfa(int[][] transTable, ArrayList<DfaState> states, int size, Set<Character> alphabet) {
        this.transTable = transTable;
        this.states     = states;
        this.size       = size;
@@ -174,15 +174,15 @@ public class Dfa {
 			transition[START][0] = ACCEPT;
 		}
 
-		Set<String> alpha = getAlphabet(n); // can't use class attribute as it is non-static
+		Set<Character> alpha = getAlphabet(n); // can't use class attribute as it is non-static
 		//Todo - SEE SUBSET CONSTRUCTION ALGORITHM IN SLIDES (the mark V as final is already done in the DfaState class)
 
 		// need to check the logic of this, i copied directly from the slides
 		while (!dfaStatesQueue.isEmpty()) {
 			DfaState T = dfaStatesQueue.remove();
 			// dfaStates.add(T);
-			for (String a : alpha){
-				HashSet<NfaState> V = epsilonClosure((move(T.getNfaStateSet(), a.charAt(0))));// should be a single character - get first
+			for (Character a : alpha){
+				HashSet<NfaState> V = epsilonClosure((move(T.getNfaStateSet(), a)));// should be a single character - get first
 				if (!dfaStates.contains(V)) {
 					DfaState d = new DfaState( V);
 					dfaStates.add(d);
@@ -193,7 +193,7 @@ public class Dfa {
 					}*/
 
 				}
-				transition[dfaStates.indexOf(T)][ a.charAt(0)] = dfaStates.indexOf(V);
+				transition[dfaStates.indexOf(T)][a] = dfaStates.indexOf(V);
 			}
 		}
 
@@ -252,10 +252,10 @@ public class Dfa {
 	}
 
 
-	public static Set<String> getAlphabet(Nfa n) {
+	public static Set<Character> getAlphabet(Nfa n) {
 
 		//Made the BaseType String as it wont accept the primitive char type
-		Set<String> alphabet = new HashSet<String>();
+		Set<Character> alphabet = new HashSet<Character>();
 
 		Stack<NfaState> states = new Stack<NfaState>();
 		HashSet<NfaState> statesChecked = new HashSet<NfaState>();
@@ -269,7 +269,7 @@ public class Dfa {
 			char symbol = state.symbol;
 
 			if (symbol != NfaState.ACCEPT && symbol != NfaState.EPSILON) {
-				alphabet.add(Character.toString(symbol)); //add() first checks to see if the element is already in the set or not
+				alphabet.add(symbol); //add() first checks to see if the element is already in the set or not
 			}
 
 			if (state.next1 != null && !statesChecked.contains(state.next1)) {

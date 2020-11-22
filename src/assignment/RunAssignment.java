@@ -23,16 +23,24 @@ public class RunAssignment {
 		while(file.hasNextLine()) {	//traversing through TestData file
 
 			//The string representing the Regular Expression that is read in from the text file
-			String reString = file.nextLine();		//reading new regex from file
+			String reString = file.nextLine();		//reading new regular expression from file
 			
 			System.out.println("=============== Converting regular expression  " + reString + "  to RegExp expression tree ===============");
 
 			RegExp re = null; //initialise
+			Nfa n = null; //initialise
 
 			try {
 				RegExp.setNextStateNum(0);
 				re = (new RegExp2AST(reString)).convert(); //Create regular expression (in the form of a regular expression tree)
 				System.out.println("Successfully Converted!");
+
+				//Create an NFA for the regular expression (by using Thompson's Construction)
+				System.out.println("\n=============== Converting regular expression  " + reString + "  to NFA ===============");
+				n = re.makeNfa();
+
+				System.out.println("Successfully Converted!");
+
 			} catch (ParseException ex) {
 				System.out.println("Error at/near position  " + ex.getErrorOffset() + "  : " +
 					ex.getMessage());
@@ -40,12 +48,7 @@ public class RunAssignment {
 				System.out.println("IOException encountered");
 				ex.printStackTrace();
 			}
-			
 
-			//Create an NFA for the regular expression (by using Thompson's Construction)
-			System.out.println("\n=============== Converting regular expression  " + reString + "  to NFA ===============");
-			Nfa n = re.makeNfa();
-			System.out.println("Successfully Converted!");
 			
 			//Create DFA from the NFA using Subset Construction
 			System.out.println("\n=============== Converting NFA to DFA ===============");
@@ -79,7 +82,9 @@ public class RunAssignment {
 				if(da.accept(test)){ //determining if must ACCEPT or REJECT this test string
 					System.out.println("String ACCEPTED!");
 				}
-				else{System.out.println("String REJECTED!");}
+				else{
+					System.out.println("String REJECTED!");
+				}
 
 				if (file.hasNextLine()) {
 					test = file.nextLine();
